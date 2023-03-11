@@ -1,0 +1,102 @@
+openapi: 3.0.3
+info:
+  title: Products Prices - OpenAPI 3.0
+  description: |-
+    Simple Rest API of pridcut prices data.
+
+  contact:
+    email: almendroslm@gmail.com
+  version: 1.0.11
+servers:
+  - url: localhost/8080/api/v1
+tags:
+  - name: prices
+    description: Final prices 
+paths:
+  /prices:
+    get:
+      tags:
+        - prices
+      summary: Finds Prices by date, productId, brandID
+      operationId: findPricesByQuery
+      parameters:
+        - name: date
+          in: query
+          description: Date that need to be considered for filter
+          required: true
+          schema:
+            type: string
+        - name: productId
+          in: query
+          description: productId that need to be considered for filter
+          required: true
+          schema:
+            type: integer
+        - name: brandID
+          in: query
+          description: brandID that need to be considered for filter
+          required: true
+          schema:
+            type: integer            
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/SuccesResponse'          
+        '400':
+          description: Invalid query param
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ApiResponse'
+        '404':
+          description: path not valid
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ApiResponse'
+        '500':
+          description: Internal error
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/ApiResponse'
+components:
+  schemas:
+    ApiResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+    SuccesResponse:
+      type: object
+      properties:
+        productId:
+          type: integer
+          format: int64
+          example: 35455
+        brandId:
+          type: integer
+          format: int64
+          example: 1  
+        priceList:
+          type: integer
+          format: int64
+          example: 4  
+        startDate:
+          type: string
+          example: 2020-06-15-16.00.00
+        endDate:
+          type: string
+          example: 2020-12-31-23.59.59
+        price:
+          type: number
+          format: float
+          example: 38.95
