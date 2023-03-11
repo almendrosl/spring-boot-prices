@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS `PRICES` (
             `BRAND_ID` INT NOT NULL,
             `START_DATE` TIMESTAMP NOT NULL,
             `END_DATE` TIMESTAMP NOT NULL,
-            `PRODUCT_ID` INT NOT NULL,
+            `PRODUCT_ID` BIGINT NOT NULL,
             `PRIORITY` INT NOT NULL,
             `PRICE` FLOAT NOT NULL,
             `CURR` ENUM('EUR')
