@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @RestController()
 @RequestMapping("/prices")
@@ -40,8 +41,14 @@ public class PricesController {
      * @return LocalDateTime parsed
      */
     private LocalDateTime formatDate(String date) {
+        LocalDateTime localDateTime;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
-        return LocalDateTime.parse(date, formatter);
+        try {
+            localDateTime = LocalDateTime.parse(date, formatter);
+        } catch (DateTimeParseException e) {
+            throw new BadTimeFormatException("The format of dat is incorrect, should be yyyy-MM-dd-HH.mm.ss");
+        }
+        return localDateTime;
     }
 
 }
