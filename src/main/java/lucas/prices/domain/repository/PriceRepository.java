@@ -10,4 +10,6 @@ public interface PriceRepository {
                                                     Long productId,
                                                     Long brandId);
 
+    void savePrice(Price price);
+
 }

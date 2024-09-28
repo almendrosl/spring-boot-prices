@@ -1,13 +1,19 @@
 package lucas.prices.application.rest;
 
+import jakarta.validation.Valid;
 import lucas.prices.application.PricesMapper;
-import lucas.prices.application.exceptions.BadTimeFormatException;
+import lucas.prices.application.exceptions.DateTimeFormatException;
 import lucas.prices.application.exceptions.PriceNotFoundException;
-import lucas.prices.application.responses.PriceDTO;
+import lucas.prices.application.PriceDTO;
+import lucas.prices.domain.Price;
 import lucas.prices.domain.service.PricesService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -18,6 +24,7 @@ import java.time.format.DateTimeParseException;
 @RequestMapping("/prices")
 public class PricesController {
 
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
     private final PricesMapper mapper;
     private final PricesService service;
 
@@ -30,10 +37,18 @@ public class PricesController {
     public PriceDTO findPricesByQuery(@RequestParam(value = "date") String date,
                                                       @RequestParam(value = "productId") Long productId,
                                                       @RequestParam(value = "brandID") Long brandID) {
-        final PriceDTO priceDTO = mapper.toPricesDTO(service.findPricesByQuery(formatDate(date), productId, brandID));
-        if (priceDTO == null) {
-            throw new PriceNotFoundException("Price not found of productId " + productId);
-        }
+
+        final Price price = service.findPricesByQuery(formatDate(date), productId, brandID)
+                .orElseThrow(() -> new PriceNotFoundException("Price not found to productId " + productId));
+
+        return mapper.toPricesDTO(price);
+    }
+
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public PriceDTO savePrice(@RequestBody @Valid PriceDTO priceDTO) {
+        Price price = mapper.toPrice(priceDTO);
+        service.savePrice(price);
         return priceDTO;
     }
 
@@ -44,11 +59,10 @@ public class PricesController {
      */
     private LocalDateTime formatDate(String date) {
         LocalDateTime localDateTime;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH.mm.ss");
         try {
-            localDateTime = LocalDateTime.parse(date, formatter);
+            localDateTime = LocalDateTime.parse(date, DATE_TIME_FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new BadTimeFormatException("The format of dat is incorrect, should be yyyy-MM-dd-HH.mm.ss");
+            throw new DateTimeFormatException("The format of dat is incorrect, should be yyyy-MM-dd-HH.mm.ss");
         }
         return localDateTime;
     }

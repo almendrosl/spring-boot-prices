@@ -22,6 +22,13 @@ public class H2PricesRepository implements PriceRepository {
 
     @Override
     public List<Price> findPricesByDateProductIdAndBrandId(LocalDateTime date, Long productId, Long brandId) {
-        return mapper.toPrices(repository.findPricesByDateProductIdAndBrandId(date, productId, brandId));
+        List<PriceEntity> pricesByDateProductIdAndBrandId = repository.findPricesByDateProductIdAndBrandId(date, productId, brandId);
+        return mapper.toPrices(pricesByDateProductIdAndBrandId);
+    }
+
+    @Override
+    public void savePrice(Price price) {
+        PriceEntity priceEntity = mapper.toPriceEntity(price);
+        repository.save(priceEntity);
     }
 }

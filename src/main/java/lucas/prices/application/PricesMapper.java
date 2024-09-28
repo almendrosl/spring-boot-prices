@@ -1,6 +1,5 @@
 package lucas.prices.application;
 
-import lucas.prices.application.responses.PriceDTO;
 import lucas.prices.domain.Price;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -9,5 +8,7 @@ import org.mapstruct.MappingConstants;
 public interface PricesMapper {
 
     PriceDTO toPricesDTO(Price price);
+
+    Price toPrice(PriceDTO priceDTO);
 
 }

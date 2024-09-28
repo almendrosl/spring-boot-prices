@@ -1,6 +1,6 @@
 package lucas.prices;
 
-import lucas.prices.application.responses.PriceDTO;
+import lucas.prices.application.PriceDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

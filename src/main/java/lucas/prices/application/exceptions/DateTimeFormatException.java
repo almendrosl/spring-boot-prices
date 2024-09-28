@@ -3,9 +3,9 @@ package lucas.prices.application.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.BAD_REQUEST)
-public class BadTimeFormatException  extends RuntimeException {
-    public BadTimeFormatException(String message) {
+
+public class DateTimeFormatException extends RuntimeException {
+    public DateTimeFormatException(String message) {
         super(message);
     }
 }

@@ -12,4 +12,6 @@ public interface PriceEntityToPriceMapper {
     Price toPrice(PriceEntity priceEntity);
 
     List<Price> toPrices(List<PriceEntity> priceEntities);
+
+    PriceEntity toPriceEntity(Price price);
 }
