@@ -1,5 +1,6 @@
 package lucas.prices.application.exceptions;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -13,12 +14,14 @@ import java.util.Map;
 import java.util.Objects;
 
 @ControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
 
     public static final String MESSAGE = "message";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationException(MethodArgumentNotValidException ex) {
+        log.error(ex.getMessage());
         var errors = new HashMap<String, String>();
         errors.put(MESSAGE, Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
@@ -26,6 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DateTimeFormatException.class)
     public ResponseEntity<Map<String, String>> handleDateTimeFormatExceptionException(DateTimeFormatException ex) {
+        log.error(ex.getMessage());
         var errors = new HashMap<String, String>();
         errors.put(MESSAGE, ex.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
@@ -33,6 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PriceNotFoundException.class)
     public ResponseEntity<Map<String, String>> handlePriceNotFoundExceptionException(PriceNotFoundException ex) {
+        log.error(ex.getMessage());
         var errors = new HashMap<String, String>();
         errors.put(MESSAGE, ex.getMessage());
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
@@ -40,6 +45,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DateTimeParseException.class)
     public ResponseEntity<Map<String, String>> handleDateTimeParseExceptionException(DateTimeParseException ex) {
+        log.error(ex.getMessage());
         var errors = new HashMap<String, String>();
         errors.put(MESSAGE, "Date request format not valid");
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
@@ -47,6 +53,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {HttpMessageNotReadableException.class, MissingServletRequestParameterException.class})
     public ResponseEntity<Map<String, String>> handleHttpMessageNotReadableException(Exception ex) {
+        log.error(ex.getMessage());
         var errors = new HashMap<String, String>();
         errors.put(MESSAGE, ex.getLocalizedMessage());
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
@@ -54,6 +61,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> internalServerError(Exception ex) {
+        log.error(ex.getMessage());
         var errors = new HashMap<String, String>();
         errors.put(MESSAGE, "Internal error");
         return new ResponseEntity<>(errors, HttpStatus.INTERNAL_SERVER_ERROR);
