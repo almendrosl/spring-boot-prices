@@ -1,4 +1,4 @@
-package lucas.prices.rest;
+package lucas.prices.application.responses;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;

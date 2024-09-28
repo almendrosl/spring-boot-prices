@@ -1,4 +1,4 @@
-package lucas.prices.reposotory;
+package lucas.prices.infrastructure.repository.h2;
 
 
 import lombok.Data;

@@ -1,8 +1,10 @@
-package lucas.prices.rest;
+package lucas.prices.application.rest;
 
-import lucas.prices.services.PricesService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lucas.prices.application.PricesMapper;
+import lucas.prices.application.exceptions.BadTimeFormatException;
+import lucas.prices.application.exceptions.PriceNotFoundException;
+import lucas.prices.application.responses.PriceDTO;
+import lucas.prices.domain.service.PricesService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,14 +27,14 @@ public class PricesController {
     }
 
     @GetMapping()
-    public ResponseEntity<PriceDTO> findPricesByQuery(@RequestParam(value = "date") String date,
+    public PriceDTO findPricesByQuery(@RequestParam(value = "date") String date,
                                                       @RequestParam(value = "productId") Long productId,
                                                       @RequestParam(value = "brandID") Long brandID) {
         final PriceDTO priceDTO = mapper.toPricesDTO(service.findPricesByQuery(formatDate(date), productId, brandID));
         if (priceDTO == null) {
             throw new PriceNotFoundException("Price not found of productId " + productId);
         }
-        return new ResponseEntity<>(priceDTO, HttpStatus.OK);
+        return priceDTO;
     }
 
     /**

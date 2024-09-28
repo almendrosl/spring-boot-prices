@@ -1,8 +1,7 @@
-package lucas.prices.services;
+package lucas.prices.domain.service;
 
-import lucas.prices.models.Price;
-import lucas.prices.reposotory.PriceEntityToPriceMapper;
-import lucas.prices.reposotory.PriceRepository;
+import lucas.prices.domain.Price;
+import lucas.prices.domain.repository.PriceRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -10,15 +9,13 @@ import java.util.Comparator;
 import java.util.List;
 
 @Service
-public class PricesServiceImpl implements PricesService {
+public class DomainPricesService implements PricesService {
 
     private final PriceRepository repository;
-    private final PriceEntityToPriceMapper mapper;
 
 
-    public PricesServiceImpl(PriceRepository repository, PriceEntityToPriceMapper mapper) {
+    public DomainPricesService(PriceRepository repository) {
         this.repository = repository;
-        this.mapper = mapper;
     }
 
 
@@ -32,9 +29,10 @@ public class PricesServiceImpl implements PricesService {
      */
     @Override
     public Price findPricesByQuery(LocalDateTime date, Long productId, Long brandID) {
-        List<Price> prices = mapper.toPrices(repository.findPricesByDateProductIdAndBrandId(date, productId, brandID));
+        List<Price> prices = repository.findPricesByDateProductIdAndBrandId(date, productId, brandID);
 
-        return prices.stream().max(Comparator.comparingInt(Price::getPriority))
+        return prices.stream()
+                .max(Comparator.comparingInt(Price::getPriority))
                 .orElse(null);
     }
 }

@@ -1,6 +1,6 @@
-package lucas.prices.services;
+package lucas.prices.domain.service;
 
-import lucas.prices.models.Price;
+import lucas.prices.domain.Price;
 
 import java.time.LocalDateTime;
 

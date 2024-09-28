@@ -1,4 +1,4 @@
-package lucas.prices.models;
+package lucas.prices.domain;
 
 import lombok.Data;
 

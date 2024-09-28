@@ -1,6 +1,6 @@
-package lucas.prices.reposotory;
+package lucas.prices.infrastructure.repository.h2;
 
-import lucas.prices.models.Price;
+import lucas.prices.domain.Price;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 
