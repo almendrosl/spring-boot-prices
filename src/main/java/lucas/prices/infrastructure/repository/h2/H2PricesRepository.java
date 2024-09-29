@@ -31,4 +31,10 @@ public class H2PricesRepository implements PriceRepository {
         PriceEntity priceEntity = mapper.toPriceEntity(price);
         repository.save(priceEntity);
     }
+
+    @Override
+    public List<Price> findAllPrices() {
+        List<PriceEntity> priceEntities = repository.findAll();
+        return mapper.toPrices(priceEntities);
+    }
 }

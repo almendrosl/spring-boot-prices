@@ -41,4 +41,9 @@ public class DomainPricesService implements PricesService {
     public void savePrice(Price price) {
         repository.savePrice(price);
     }
+
+    @Override
+    public List<Price> findAllPrices() {
+        return repository.findAllPrices();
+    }
 }

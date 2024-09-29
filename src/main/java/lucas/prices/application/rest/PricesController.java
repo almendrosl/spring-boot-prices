@@ -1,10 +1,10 @@
 package lucas.prices.application.rest;
 
 import jakarta.validation.Valid;
+import lucas.prices.application.PriceDTO;
 import lucas.prices.application.PricesMapper;
 import lucas.prices.application.exceptions.DateTimeFormatException;
 import lucas.prices.application.exceptions.PriceNotFoundException;
-import lucas.prices.application.PriceDTO;
 import lucas.prices.domain.Price;
 import lucas.prices.domain.service.PricesService;
 import org.springframework.http.HttpStatus;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 @RestController()
 @RequestMapping("/prices")
@@ -35,13 +36,13 @@ public class PricesController {
 
     @GetMapping()
     public PriceDTO findPricesByQuery(@RequestParam(value = "date") String date,
-                                                      @RequestParam(value = "productId") Long productId,
-                                                      @RequestParam(value = "brandID") Long brandID) {
+                                      @RequestParam(value = "productId") Long productId,
+                                      @RequestParam(value = "brandID") Long brandID) {
 
         final Price price = service.findPricesByQuery(formatDate(date), productId, brandID)
                 .orElseThrow(() -> new PriceNotFoundException("Price not found to productId " + productId));
 
-        return mapper.toPricesDTO(price);
+        return mapper.toPriceDTO(price);
     }
 
     @PostMapping()
@@ -52,8 +53,15 @@ public class PricesController {
         return priceDTO;
     }
 
+    @GetMapping("/all")
+    public List<PriceDTO> findAllPrices() {
+        List<Price> prices = service.findAllPrices();
+        return mapper.toPricesDTO(prices);
+    }
+
     /**
      * formatDate return LocalDateTime parsed by the format 'yyyy-MM-dd-HH.mm.ss' ej. 2020-06-14-15.00.01
+     *
      * @param date date to parse
      * @return LocalDateTime parsed
      */

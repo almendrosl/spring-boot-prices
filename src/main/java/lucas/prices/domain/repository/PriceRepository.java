@@ -12,4 +12,6 @@ public interface PriceRepository {
 
     void savePrice(Price price);
 
+    List<Price> findAllPrices();
+
 }
