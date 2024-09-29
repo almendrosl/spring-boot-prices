@@ -11,7 +11,7 @@ servers:
   - url: localhost/8080/api/v1
 tags:
   - name: prices
-    description: Final prices 
+    description: Final prices
 paths:
   /prices:
     get:
@@ -37,45 +37,93 @@ paths:
           description: brandID that need to be considered for filter
           required: true
           schema:
-            type: integer            
+            type: integer
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/SuccesResponse'          
+                $ref: '#/components/schemas/PriceDTO'
         '400':
           description: Invalid query param
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/ErrorResponse'
         '404':
           description: path not valid
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/ErrorResponse'
         '500':
           description: Internal error
           content:
             application/json:
               schema:
-                  $ref: '#/components/schemas/ApiResponse'
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - prices
+      summary: Save a new price entry
+      operationId: savePrice
+      requestBody:
+        description: Price data to save
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PriceDTO'
+      responses:
+        '201':
+          description: Successfully created price
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PriceDTO'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /prices/all:
+    get:
+      tags:
+        - prices
+      summary: Fetches all prices
+      operationId: findAllPrices
+      responses:
+        '200':
+          description: Successfully retrieved all prices
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PriceDTO'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
 components:
   schemas:
-    ApiResponse:
+    ErrorResponse:
       type: object
       properties:
-        code:
-          type: integer
-          format: int32
-        type:
-          type: string
         message:
           type: string
-    SuccesResponse:
+    SuccessResponse:
       type: object
       properties:
         productId:
@@ -85,11 +133,11 @@ components:
         brandId:
           type: integer
           format: int64
-          example: 1  
+          example: 1
         priceList:
           type: integer
           format: int64
-          example: 4  
+          example: 4
         startDate:
           type: string
           example: 2020-06-15-16.00.00
@@ -100,3 +148,54 @@ components:
           type: number
           format: float
           example: 38.95
+    PriceDTO:
+      type: object
+      required:
+        - productId
+        - brandId
+        - priceList
+        - startDate
+        - endDate
+        - price
+        - priority
+        - currency
+      properties:
+        productId:
+          type: integer
+          format: int64
+          description: "Product ID is mandatory"
+          example: 35455
+        brandId:
+          type: integer
+          format: int64
+          description: "Brand ID is mandatory"
+          example: 1
+        priceList:
+          type: integer
+          format: int64
+          description: "Price list ID is mandatory"
+          example: 4
+        startDate:
+          type: string
+          format: date-time
+          description: "Start date in the format yyyy-MM-dd-HH.mm.ss"
+          example: "2020-06-15-16.00.00"
+        endDate:
+          type: string
+          format: date-time
+          description: "End date in the format yyyy-MM-dd-HH.mm.ss"
+          example: "2020-12-31-23.59.59"
+        price:
+          type: number
+          format: float
+          minimum: 0
+          description: "Price is mandatory and must be a positive number"
+          example: 38.95
+        priority:
+          type: integer
+          description: "Priority is mandatory"
+          example: 1
+        currency:
+          type: string
+          description: "Currency is mandatory"
+          example: "USD"
