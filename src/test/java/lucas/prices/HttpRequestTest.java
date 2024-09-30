@@ -12,9 +12,11 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Objects;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class HttpRequestTest {
+class HttpRequestTest {
 
     @Value(value="${local.server.port}")
     private int port;
@@ -30,11 +32,11 @@ public class HttpRequestTest {
             "2020-06-15-10.00.00, 35455, 1, 3, 2020-06-15T00:00, 2020-06-15T11:00, 30.5",
             "2020-06-16-21.00.00, 35455, 1, 4, 2020-06-15T16:00, 2020-12-31T23:59:59, 38.95",
     })
-    public void getPricesTest(String date, Long productId, Long brandID, Long priceList, String startDate, String endDate, Float price) throws Exception {
+    void getPricesTest(String date, Long productId, Long brandID, Long priceList, String startDate, String endDate, Float price) {
         String url = String.format("http://localhost:%s/api/v1/prices?date=%s&productId=%s&brandID=%s", port, date, productId, brandID);
         ResponseEntity<PriceDTO> response =  restTemplate.getForEntity(url, PriceDTO.class);
-        Assertions.assertEquals(response.getStatusCode(), HttpStatus.OK);
-        Assertions.assertEquals(response.getBody().getProductId(), productId);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(Objects.requireNonNull(response.getBody()).getProductId(), productId);
         Assertions.assertEquals(response.getBody().getPriceList(), priceList);
         Assertions.assertEquals(response.getBody().getStartDate().toString(), startDate);
         Assertions.assertEquals(response.getBody().getEndDate().toString(), endDate);
@@ -42,23 +44,23 @@ public class HttpRequestTest {
     }
 
     @Test
-    public void getPricesTestGetBadRequest() throws Exception {
+    void getPricesTestGetBadRequest() {
         String url = String.format("http://localhost:%s/api/v1/prices", port);
         ResponseEntity<PriceDTO> response =  restTemplate.getForEntity(url, PriceDTO.class);
-        Assertions.assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void getPricesTestWhitBadDateFormatGetBadRequest() throws Exception {
+    void getPricesTestWhitBadDateFormatGetBadRequest() {
         String url = String.format("http://localhost:%s/api/v1/prices?date=%s&productId=%s&brandID=%s", port, "2020-06-16-21.0000", 35455, 1);
         ResponseEntity<PriceDTO> response =  restTemplate.getForEntity(url, PriceDTO.class);
-        Assertions.assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
-    public void getPricesTestGetNotFound() throws Exception {
+    void getPricesTestGetNotFound() {
         String url = String.format("http://localhost:%s/api/v1/prices?date=%s&productId=%s&brandID=%s", port, "2020-06-16-21.00.00", 354554, 1);
         ResponseEntity<PriceDTO> response =  restTemplate.getForEntity(url, PriceDTO.class);
-        Assertions.assertEquals(response.getStatusCode(), HttpStatus.NOT_FOUND);
+        Assertions.assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
